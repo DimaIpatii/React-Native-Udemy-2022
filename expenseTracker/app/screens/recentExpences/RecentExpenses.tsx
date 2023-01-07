@@ -1,6 +1,10 @@
-import React from 'react'
+import {useLayoutEffect, useState} from 'react'
 
 // Outer
+import moment from 'moment';
+
+// Store 
+import { useRootState } from '../../store/hooks';
 
 // Gloabl
 import { colors } from '../../utils/variables';
@@ -10,32 +14,28 @@ import { StyleSheet } from 'react-native';
 
 // Components
 import {View, FlatList} from 'react-native';
-import TotalDisplay from '../../components/totalDisplay/TotalDisplay';
-import ExpencesList from '../../components/expencesList/ExpencesList';
+import Summary from '../../components/Summary/Summary';
+import ExpencesList from '../../components/ExpencesList/ExpencesList';
 import { LinearGradient } from 'expo-linear-gradient';
 
 // Types
-import {IExpenseItem} from '../../components/expencesList/ExpencesList';
+import {IExpenseItem} from '../../types/global';
 
 
 const RecentExpenses = (): JSX.Element => {
-    const data: IExpenseItem[] = [
-      {title: "Item", price: 120, date: "10/01/2023" },
-      {title: "Item 2", price: 600, date: "12/01/2023" },
-      {title: "Item 3", price: 20, date: "21/01/2023" },
-      {title: "Item 4", price: 20, date: "21/01/2023" },
-      {title: "Item 5", price: 20, date: "21/01/2023" },
-      {title: "Item 6", price: 20, date: "21/01/2023" },
-      {title: "Item 7", price: 20, date: "21/01/2023" },
-      {title: "Item 8", price: 20, date: "21/01/2023" },
-      {title: "Item 9", price: 20, date: "21/01/2023" },
-      {title: "Item 10", price: 20, date: "21/01/2023" },
-    ]
-    
+  const expences = useRootState(state => state.expences);
+  const [data, setData] = useState<IExpenseItem[]>([]);
+
+  useLayoutEffect(() => {
+    if(expences.length > 0){
+      setData(expences.filter(expence => moment().diff(moment(expence.date, "DD/MM/yyyy"), "day") < 7));
+    }
+  },[expences]);
+
   return (
     <View style={styles.conatiner}>
       <LinearGradient colors={[colors.primary300,colors.primary500, colors.tertiary]} style={styles.gradient} locations={[0.2,0.7,0.9]}>
-        <TotalDisplay title="Recent Expences" total={500} type="Recent" />
+        <Summary title="Recent Expences" type="Recent" />
         <ExpencesList data={data} />
       </LinearGradient>
     </View>
@@ -51,6 +51,5 @@ const styles = StyleSheet.create({
   },
   gradient: {
     flex: 1,
-    
   }
 })

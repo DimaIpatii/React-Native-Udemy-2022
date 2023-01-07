@@ -1,5 +1,7 @@
 import React from 'react'
 
+// Outer
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 
 // Global
 import {colors} from '../../utils/variables';
@@ -8,35 +10,40 @@ import {colors} from '../../utils/variables';
 import { StyleSheet } from 'react-native';
 
 // Components
-import {FlatList, View, Text} from 'react-native';
+import {FlatList, View, Text, Pressable} from 'react-native';
 import { FontAwesome } from '@expo/vector-icons'; 
 
 // Types
-export interface IExpenseItem{
-    title: string,
-    date: string,
-    price: number
-};
+import { Direction } from '../../types/global';
+import { IExpenseItem } from '../../types/global';
+
 
 interface IExpenceListProps{
     data: IExpenseItem[]
 }
 
 const ExpencesList = (props: IExpenceListProps): JSX.Element => {
+    const navigation: NavigationProp<any> = useNavigation();
+
   return (
     <FlatList data={props.data} style={styles.listContainer} renderItem={({item, index}) => (
-        <View style={[styles.container, {marginBottom: index === props.data.length ? 0 : 15}]}>
-            <View >
-                <Text style={styles.title}>{item.title}</Text>
-                <Text style={styles.date}>{item.date}</Text>
-            </View>
+        <Pressable onPress={() => {
+            navigation.navigate(Direction.ManageExpence, {expenceId: item.id});
+            
+        }} >
+            <View style={[styles.container, {marginBottom: index === props.data.length ? 0 : 15}]}>
+                <View >
+                    <Text style={styles.title}>{item.title}</Text>
+                    <Text style={styles.date}>{item.date}</Text>
+                </View>
 
-            <View style={styles.priceContainer}>
-                <View style={styles.priceWrapper}>
-                    <Text style={styles.price}><FontAwesome name="dollar" size={14} color={colors.gold} />{item.price}</Text>
+                <View style={styles.priceContainer}>
+                    <View style={styles.priceWrapper}>
+                        <Text style={styles.price}><FontAwesome name="dollar" size={14} color={colors.gold} />{item.price}</Text>
+                    </View>
                 </View>
             </View>
-        </View>
+        </Pressable>
     )}/>
   )
 }

@@ -1,8 +1,11 @@
-import React from 'react'
+import {useState, useLayoutEffect} from 'react'
 
 // Global
 import {colors} from '../../utils/variables';
+import moment from 'moment';
 
+// Store
+import {useRootState } from '../../store/hooks';
 // Styles
 import { StyleSheet } from 'react-native'
 
@@ -12,13 +15,27 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { FontAwesome } from '@expo/vector-icons'; 
 
 // Types
-interface ITotalDisplayProps {
+interface ISummaryProps {
     title: string,
-    total: number,
     type: "All" | "Recent"
 };
 
-const TotalDisplay = (props: ITotalDisplayProps): JSX.Element => {
+const Summary = (props: ISummaryProps): JSX.Element => {
+    const expences = useRootState(state => state.expences);
+    const [total, setTotal] = useState<number>(0);
+
+    useLayoutEffect(() => {
+
+        if(props.type === "All"){
+            const total = expences.reduce((sum, expence) => sum + expence.price, 0);
+            setTotal(total);
+        }else if (props.type === "Recent" ){
+            const recent = expences.filter(expence => moment().diff(moment(expence.date, "DD/MM/yyyy"), "day") < 7);
+            const total = recent.reduce((sum, expence) => sum + expence.price, 0);
+            setTotal(total);
+        }
+    },[expences]);
+
   return (
     <View style={styles.container}>
         <LinearGradient colors={[colors.primary300, colors.primary400]} style={styles.gradientContainer}>
@@ -28,13 +45,13 @@ const TotalDisplay = (props: ITotalDisplayProps): JSX.Element => {
                     <Text style={styles.typeLabel}>{props.type === "All" ? "Total" : "Last 7 Days"}</Text>
                 </View>
             </View>
-            <Text style={styles.total}><FontAwesome name="dollar" size={35} color={colors.gold} />{props.total}</Text>
+            <Text style={styles.total}><FontAwesome name="dollar" size={35} color={colors.gold} />{total}</Text>
         </LinearGradient>
     </View>
   )
 }
 
-export default TotalDisplay;
+export default Summary;
 
 
 const styles = StyleSheet.create({

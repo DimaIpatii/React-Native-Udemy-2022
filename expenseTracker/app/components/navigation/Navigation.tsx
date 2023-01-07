@@ -12,7 +12,7 @@ import { StyleSheet } from 'react-native';
 
 // Components
 import {View, Dimensions} from 'react-native';
-import IconButton from '../iconButton/IconButton';
+import IconButton from '../IconButton/IconButton';
 import { EvilIcons, AntDesign } from '@expo/vector-icons'; 
 
 // Types
@@ -22,7 +22,7 @@ import { Direction } from '../../types/global';
 const screenWidth = Dimensions.get("screen").width;
 
 const Navigation = (): JSX.Element => {
-    const [selectedScreen, setSelectedScreen] = useState<Direction.AllExpences | Direction.RecentExpences>(Direction.RecentExpences);
+    const [selectedScreen, setSelectedScreen] = useState<Direction.AllExpences | Direction.RecentExpences | null>(Direction.RecentExpences);
     
     const navigationHandler = (direction: Direction): void => {
         
@@ -35,9 +35,9 @@ const Navigation = (): JSX.Element => {
                 setSelectedScreen(Direction.RecentExpences);
                 navigate(Direction.RecentExpences as never, {name: Direction.RecentExpences}  as never);
                 break;
-            case Direction.NewEpence:
+            case Direction.ManageExpence:
                 setSelectedScreen(null)
-                navigate(Direction.NewEpence as never, {name: Direction.NewEpence}as never);
+                navigate(Direction.ManageExpence as never, {name: Direction.ManageExpence}as never);
                 break;
         }
         
@@ -56,7 +56,7 @@ const Navigation = (): JSX.Element => {
         <IconButton 
             Icon={<AntDesign name="plus" size={30} color="white" />} 
             overrideButtonStyles={styles.buttonAdd} 
-            onPress={() => navigationHandler(Direction.NewEpence)}
+            onPress={() => navigationHandler(Direction.ManageExpence)}
         />
 
         <View style={styles.buttonWrapper}>

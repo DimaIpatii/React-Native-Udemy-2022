@@ -1,5 +1,14 @@
 export enum Direction {
     AllExpences = "AllExpences",
     RecentExpences = "RecentExpences",
-    NewEpence = "NewExpence"
+    ManageExpence = "ManageExpence",
+    NewExpence = "NewExpence",
+    UpdateExpence = "UpdateExpence"
   }
+
+  export interface IExpenseItem{
+    id: number,
+    title: string,
+    date: string,
+    price: number
+};

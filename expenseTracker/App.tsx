@@ -1,6 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
 
 // Outer
+import { Provider } from 'react-redux';
+
+// Store
+import appStore from './app/store/store';
 
 // Global
 import { colors } from './app/utils/variables';
@@ -10,16 +14,16 @@ import { navigationRef } from './app/utils/RootNavigator';
 
 // Components
 import { SafeAreaView, StyleSheet, View, Dimensions  } from 'react-native';
-import AllExpenses from './app/screens/allExpences/AllExpenses';
-import RecentExpenses from './app/screens/recentExpences/RecentExpenses';
+import AllExpenses from './app/screens/AllExpences/AllExpenses';
+import RecentExpenses from './app/screens/RecentExpences/RecentExpenses';
 import { NavigationContainer, createNavigationContainerRef } from '@react-navigation/native';
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 const Stack = createNativeStackNavigator();
 
-import ExpenceForm from './app/screens/expenceForm/ExpenceForm';
+import ManageExpence from './app/screens/ManageExpence/ManageExpence';
 
 import { LinearGradient } from 'expo-linear-gradient';
-import Navigation from './app/components/navigation/Navigation';
+import Navigation from './app/components/Navigation/Navigation';
 
 // Types
 import {Direction} from './app/types/global';
@@ -28,6 +32,7 @@ import {Direction} from './app/types/global';
 export default function App(): JSX.Element {
   
   return (
+    <Provider store={appStore}>
       <LinearGradient colors={[colors.primary300,  "#fff"]} style={styles.gradient} locations={[0.2,0.9]}>
         <SafeAreaView style={styles.container} >
           <View style={styles.screens}>
@@ -40,7 +45,7 @@ export default function App(): JSX.Element {
                 
               }}>
                 <Stack.Screen name={Direction.RecentExpences} component={RecentExpenses} />
-                <Stack.Screen name={Direction.NewEpence} component={ExpenceForm} />
+                <Stack.Screen name={Direction.ManageExpence} component={ManageExpence} options={{presentation: "modal"}} />
                 <Stack.Screen name={Direction.AllExpences} component={AllExpenses} />
               </Stack.Navigator>
               <StatusBar style="light" />
@@ -49,6 +54,7 @@ export default function App(): JSX.Element {
           </View>
         </SafeAreaView>
       </LinearGradient>
+      </Provider>
   );
 }
 

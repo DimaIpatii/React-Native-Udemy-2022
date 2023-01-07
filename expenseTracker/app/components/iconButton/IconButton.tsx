@@ -15,10 +15,12 @@ interface IIconButtonProps{
     Icon: JSX.Element,
     overrideButtonStyles?: any,
     overrideLabelStyles?: any,
+    disable?: boolean
 }
 const IconButton = (props: IIconButtonProps): JSX.Element => {
   return (
     <Pressable
+        disabled={props.disable === true}
         onPress={props.onPress || null}
         style={[(props.position === "top" || props.position === "bottom") ? buttonStyles.vertical : buttonStyles.horisontal, props.overrideButtonStyles || {}]}
     >
