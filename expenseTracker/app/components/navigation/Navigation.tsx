@@ -36,7 +36,6 @@ const Navigation = (): JSX.Element => {
                 navigate(Direction.RecentExpences as never, {name: Direction.RecentExpences}  as never);
                 break;
             case Direction.ManageExpence:
-                setSelectedScreen(null)
                 navigate(Direction.ManageExpence as never, {name: Direction.ManageExpence}as never);
                 break;
         }

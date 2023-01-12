@@ -1,26 +1,33 @@
-import { createSlice, CreateSliceOptions } from "@reduxjs/toolkit";
+import { createSlice, CreateSliceOptions, createAsyncThunk } from "@reduxjs/toolkit";
 
+// Services
+import {getAllExpences, addExpence} from '../../services/APIMethods';
+export const getAllExpencesThunk = createAsyncThunk("expences/getAll", getAllExpences);
+export const addExpenceThunk = createAsyncThunk("expences/add", addExpence);
+
+// Types
 import { IExpenseItem } from "../../types/global";
 interface IExpenceSlice {
     expences: IExpenseItem[]
 }
+
+const getExpencesArray = (inputData: any): IExpenseItem[] => {
+    const response: IExpenseItem[] = [];
+
+    for(const key in inputData){
+        response.push({
+            id: key,
+            ...inputData[key]
+        })
+    }
+
+    return response.reverse();
+}
+
 const expencesSlice = createSlice({
     name: "expences",
     initialState: {
-        expences: [
-            {
-                id: 1,
-                title: "Food",
-                date: "07/01/2023",
-                price: 200
-            },
-            {
-                id: 2,
-                title: "Clothes",
-                date: "31/12/2022",
-                price: 100
-            }
-        ],
+        expences: [],
     },
     reducers: {
         updateExpence(state, action){
@@ -38,6 +45,14 @@ const expencesSlice = createSlice({
         addExpence(state, action){
             state.expences.unshift(action.payload);
         },
+    },
+    extraReducers: (builder) => {
+        builder.addCase(getAllExpencesThunk.fulfilled, (state, action) => {
+            state.expences = getExpencesArray(action.payload);
+        }),
+        builder.addCase(addExpenceThunk.fulfilled, (state, action) => {
+            state.expences.unshift(action.payload as any);
+        })
     }
 } as CreateSliceOptions<IExpenceSlice> ); 
 

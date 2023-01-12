@@ -6,6 +6,7 @@ import moment from 'moment';
 
 // Store
 import {useRootState } from '../../store/hooks';
+
 // Styles
 import { StyleSheet } from 'react-native'
 
@@ -27,10 +28,11 @@ const Summary = (props: ISummaryProps): JSX.Element => {
     useLayoutEffect(() => {
 
         if(props.type === "All"){
-            const total = expences.reduce((sum, expence) => sum + expence.price, 0);
+            const total = expences?.reduce((sum, expence) => sum + expence.price, 0);
             setTotal(total);
         }else if (props.type === "Recent" ){
-            const recent = expences.filter(expence => moment().diff(moment(expence.date, "DD/MM/yyyy"), "day") < 7);
+            
+            const recent = expences?.filter(expence => moment().diff(moment(expence.date, "DD/MM/yyyy"), "day") < 7);
             const total = recent.reduce((sum, expence) => sum + expence.price, 0);
             setTotal(total);
         }

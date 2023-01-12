@@ -7,6 +7,7 @@ import moment from 'moment';
 // Store
 import { actions } from '../../store/slices/expencesSlice';
 import { useDispatchApp, useRootState } from '../../store/hooks';
+import { addExpenceThunk } from '../../store/slices/expencesSlice';
 
 // Global
 import { colors } from '../../utils/variables';
@@ -32,18 +33,20 @@ const ManageExpence = (): JSX.Element => {
   const dispatch = useDispatchApp();
 
   const isEditing = !!params?.expenceId
-  const [title, setTitle] = useState<string>("");
-  const [date, setDate] = useState<string>(moment().format("DD/MM/yyyy"));
-  const [price, setPrice] = useState<string>("");
+  const [formValues, setFormValues] = useState<{title: string, date: string, price: string}>({
+    title: "",
+    price: "",
+    date: moment().format("DD/MM/yyyy")
+  });
 
   /* ********************************** */
   
-  const confirmHandler = (): void => {
+  const confirmHandler = async (): Promise<void> => {
 
     const expence: Partial<IExpenseItem> = {
-      title,
-      date,
-      price: Number(price),
+      title: formValues.title,
+      date: formValues.date,
+      price: Number(formValues.price),
     }
 
     if(params?.expenceId){
@@ -54,11 +57,7 @@ const ManageExpence = (): JSX.Element => {
           ...expence
         }));
     }else{
-      console.log("Add")
-      dispatch(actions.addExpence({
-        id: new Date().getTime(),
-        ...expence,
-      }))
+      await dispatch(addExpenceThunk(expence));
     };
 
     navigation.goBack();
@@ -81,9 +80,11 @@ const ManageExpence = (): JSX.Element => {
       const currentExpence = expences ? expences.find(expence => expence.id === params?.expenceId) : null;
 
       if(currentExpence){
-        setTitle(currentExpence.title);
-        setDate(currentExpence.date);
-        setPrice(String(currentExpence.price));
+        setFormValues({
+          title: currentExpence.title,
+          price: String(currentExpence.price),
+          date: currentExpence.date
+        })
       }
     }
   },[expences]);
@@ -98,8 +99,8 @@ const ManageExpence = (): JSX.Element => {
 
             <TextInput 
               placeholder='Title'
-              value={title}
-              onChangeText={(newTitle) => setTitle(newTitle)} 
+              value={formValues.title}
+              onChangeText={(newTitle) => setFormValues({...formValues, title: newTitle})} 
               style={styles.titleInput} 
             />
 
@@ -108,19 +109,19 @@ const ManageExpence = (): JSX.Element => {
                 <AntDesign name="calendar" size={15} color={colors.primary500} style={styles.infoIcon} />
                 <TextInput 
                   placeholder='01/01/2023' 
-                  value={date}
-                  onChangeText={(newDate) => setDate(newDate)} 
+                  value={formValues.date}
+                  onChangeText={(newDate) => setFormValues({...formValues, date: newDate})} 
                   style={styles.dateInput} 
                 />
               </View>
               <View style={styles.infoWrapper}>
                 <FontAwesome name="dollar" size={15} color={colors.primary500} style={styles.infoIcon} />
                 <TextInput 
-                  value={price} 
+                  value={formValues.price} 
                   placeholder='Price'
                   style={styles.priceInput} 
-                  onChangeText={(newPrice) => setPrice(newPrice)} 
-                  keyboardType="number-pad"
+                  onChangeText={(newPrice) => setFormValues({...formValues, price: newPrice})} 
+                  keyboardType="decimal-pad"
                   textContentType="telephoneNumber"
                 />
               </View>
@@ -143,7 +144,7 @@ const ManageExpence = (): JSX.Element => {
               </Pressable>
 
             <IconButton
-              disable={title.trim().length === 0}
+              disable={formValues.title.trim().length === 0}
               Icon={isEditing ? <Feather name="refresh-cw" size={20} color="white" /> : <Ionicons name="ios-add" size={20} color="white" />} 
               label={isEditing ? "Update" : "Add"}  
               overrideLabelStyles={[styles.label]}

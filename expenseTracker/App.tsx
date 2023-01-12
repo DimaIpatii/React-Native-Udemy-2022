@@ -30,7 +30,10 @@ import {Direction} from './app/types/global';
 
 
 export default function App(): JSX.Element {
-  
+  // TODO: 
+  /* 
+  * Add placeholder text in Recent and All expences section
+  */
   return (
     <Provider store={appStore}>
       <LinearGradient colors={[colors.primary300,  "#fff"]} style={styles.gradient} locations={[0.2,0.9]}>
