@@ -83,7 +83,8 @@ const styles = StyleSheet.create({
           height: -1,
         },
         shadowOpacity: 0.5,
-        shadowRadius: 1
+        shadowRadius: 1,
+        elevation: 17,
       },
       buttonWrapper: {flex: 1, justifyContent: "center"},
       button: {
@@ -106,6 +107,7 @@ const styles = StyleSheet.create({
           height: 4,
         },
         shadowOpacity: 0.9,
-        shadowRadius: 3 
+        shadowRadius: 3,
+        elevation: 10,
       }
 })

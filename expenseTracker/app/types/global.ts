@@ -7,7 +7,7 @@ export enum Direction {
   }
 
   export interface IExpenseItem{
-    id: number,
+    id: string,
     title: string,
     date: string,
     price: number

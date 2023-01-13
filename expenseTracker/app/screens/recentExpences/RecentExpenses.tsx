@@ -14,7 +14,7 @@ import { colors } from '../../utils/variables';
 import { StyleSheet, ActivityIndicator } from 'react-native';
 
 // Components
-import {View, Text} from 'react-native';
+import {View} from 'react-native';
 import Summary from '../../components/Summary/Summary';
 import ExpencesList from '../../components/ExpencesList/ExpencesList';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -32,7 +32,7 @@ const RecentExpenses = (): JSX.Element => {
   const dispatch = useDispatchApp();
 
   useLayoutEffect(() => {
-    if(expences.length > 0){
+    if(expences){
       setData(expences.filter(expence => moment().diff(moment(expence.date, "DD/MM/yyyy"), "day") < 7));
     }
   },[expences]);
@@ -54,13 +54,15 @@ const RecentExpenses = (): JSX.Element => {
 
   return (
     <View style={styles.conatiner}>
-      <LinearGradient colors={[colors.primary300,colors.primary500, colors.tertiary]} style={styles.gradient} locations={[0.2,0.7,0.9]}>
+      <LinearGradient colors={[colors.primary300,colors.primary500, colors.tertiary]} style={styles.conatiner} locations={[0.2,0.7,0.9]}>
         {loading 
-        ? <ActivityIndicator size={"large"} color="white" style={styles.loader} /> 
+        ? <ActivityIndicator size={"large"} color="white" style={styles.conatiner} /> 
         : (
         <> 
           <Summary title="Recent Expences" type="Recent" />
-          {data && data.length > 0 ? <ExpencesList data={data} /> : <NoExpencesMessage title="There are no expences in the last 7 days" /> }
+          {data && data.length > 0 ? <ExpencesList data={data} /> : (
+              <NoExpencesMessage title="No expences in the last 7 days" rootStyles={styles.messageContainer} />
+          ) }
         </>)}
       </LinearGradient>
     </View>
@@ -72,13 +74,14 @@ export default RecentExpenses
 const styles = StyleSheet.create({
   conatiner: {
     flex: 1,
-    
   },
-  gradient: {
+  messageContainer: {
     flex: 1,
-  },
-  loader: {
-    flex: 1
+    alignItems: "center",
+    justifyContent: "center",
+    width: "90%",
+    marginLeft: "auto",
+    marginRight: "auto",
   },
   
 })

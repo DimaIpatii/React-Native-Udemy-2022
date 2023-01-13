@@ -29,18 +29,30 @@ export const addExpence = async (newExpence: Partial<IExpenseItem>) => {
 
 export const updateExpence = async (updatedExpence: IExpenseItem): Promise<IExpenseItem> => {
     try{
-        const updatedExpenceResponse = await axios.post(`${BASE_URL}${updatedExpence.id}`, updatedExpence);
+        const updatedExpenceResponse = await axios.put(`${BASE_URL}expences/${updatedExpence.id}.json`, {
+            title: updatedExpence.title,
+            price: updatedExpence.price,
+            date: updatedExpence.date
+        });
+        
         
         return {
-            ...updatedExpence,
-            id: updatedExpenceResponse.data.name,
+            ...updatedExpenceResponse.data,
+            id: updatedExpence.id
         };
     }catch(error){
-        console.error("Error in updating an expence.", error);
+        console.error(`Error in updating an expence with id: ${updatedExpence.id}.`, error);
         return Promise.reject(error);
     }
 }
 
-/* export const deleteExpenceData = async (id: string) => {
 
-} */
+export const deleteExpence = async (expenceToDeleteId: string): Promise<string> => {
+    try{
+        await axios.delete(`${BASE_URL}expences/${expenceToDeleteId}.json`);
+        return expenceToDeleteId;
+    }catch(error){
+        console.error(`Error in deleting an expence with id: ${expenceToDeleteId}.`, error);
+        return Promise.reject(error);
+    }
+}

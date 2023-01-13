@@ -13,10 +13,10 @@ import { navigationRef } from './app/utils/RootNavigator';
 // Styles
 
 // Components
-import { SafeAreaView, StyleSheet, View, Dimensions  } from 'react-native';
+import { SafeAreaView, StyleSheet, View  } from 'react-native';
 import AllExpenses from './app/screens/AllExpences/AllExpenses';
 import RecentExpenses from './app/screens/RecentExpences/RecentExpenses';
-import { NavigationContainer, createNavigationContainerRef } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 const Stack = createNativeStackNavigator();
 
@@ -30,10 +30,6 @@ import {Direction} from './app/types/global';
 
 
 export default function App(): JSX.Element {
-  // TODO: 
-  /* 
-  * Add placeholder text in Recent and All expences section
-  */
   return (
     <Provider store={appStore}>
       <LinearGradient colors={[colors.primary300,  "#fff"]} style={styles.gradient} locations={[0.2,0.9]}>

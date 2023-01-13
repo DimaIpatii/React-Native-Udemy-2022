@@ -65,7 +65,10 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowRadius: 6,
         zIndex: 1,
-
+        elevation: 15,
+        backgroundColor: 'transparent',
+        borderBottomLeftRadius: 30,
+        borderBottomRightRadius: 30,
     },
     gradientContainer: {
         flex: 1,

@@ -5,9 +5,8 @@ import { useRoute, RouteProp, useNavigation, NavigationProp } from '@react-navig
 import moment from 'moment';
 
 // Store
-import { actions } from '../../store/slices/expencesSlice';
 import { useDispatchApp, useRootState } from '../../store/hooks';
-import { addExpenceThunk } from '../../store/slices/expencesSlice';
+import { addExpenceThunk, updateExpenceThunk, deleteExpenceThunk } from '../../store/slices/expencesSlice';
 
 // Global
 import { colors } from '../../utils/variables';
@@ -16,7 +15,7 @@ import { colors } from '../../utils/variables';
 import { StyleSheet } from 'react-native';
 
 // Components
-import {View, Text, Pressable, TextInput} from 'react-native';
+import {View, Text, Pressable, TextInput, Alert} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import IconButton from '../../components/IconButton/IconButton';
 import { MaterialIcons, Feather, Ionicons } from '@expo/vector-icons'; 
@@ -52,10 +51,15 @@ const ManageExpence = (): JSX.Element => {
     if(params?.expenceId){
         const currentExpence = expences ? expences.find(expence => expence.id === params?.expenceId) : null;
 
-        dispatch(actions.updateExpence({
-          ...currentExpence,
-          ...expence
-        }));
+        if(currentExpence){
+          await dispatch(updateExpenceThunk({
+            ...currentExpence,
+            ...expence
+          }));
+        }else{
+            Alert.alert("Something wrong!", "Failed to update expence")
+        }
+        
     }else{
       await dispatch(addExpenceThunk(expence));
     };
@@ -67,8 +71,8 @@ const ManageExpence = (): JSX.Element => {
     navigation.goBack();
   }
 
-  const deleteHandler = (): void => {
-    dispatch(actions.deleteExpence({id: params?.expenceId}))
+  const deleteHandler = async (): Promise<void> => {
+    await dispatch(deleteExpenceThunk(params?.expenceId))
     navigation.goBack();
   }
 

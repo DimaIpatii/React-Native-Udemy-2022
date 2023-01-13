@@ -53,23 +53,26 @@ export default ExpencesList;
 const styles = StyleSheet.create({
     listContainer: {
         flex: 1,
-        paddingHorizontal: "5%",
+        paddingHorizontal: "2%",
         paddingTop: 20
     },
     container: {
-        width: "100%",
+        
+        width: "98%",
         flexDirection: "row",
         justifyContent: "space-between",
         borderRadius: 10,
         backgroundColor: "#fff",
         paddingVertical: 20,
         paddingHorizontal: 15,
+        marginHorizontal: 5,
         shadowColor: colors.primary600,
         shadowOffset: {
             width: 0,
             height: 2,
         },
         shadowOpacity: 0.3,
+        elevation: 10,
     },
     title: {
         color: colors.primary600,

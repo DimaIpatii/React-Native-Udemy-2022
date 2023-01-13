@@ -24,9 +24,9 @@ const AllExpenses = (): JSX.Element => {
 
   return (
       <View style={styles.container}>
-        <LinearGradient colors={[colors.primary300,colors.primary500, colors.tertiary]} style={styles.gradient} locations={[0.2,0.7,0.9]}>
+        <LinearGradient colors={[colors.primary300,colors.primary500, colors.tertiary]} style={styles.container} locations={[0.2,0.7,0.9]}>
           <Summary title="All Expences" type="All" />
-          {expences && expences.length > 0 ? <ExpencesList data={expences} /> : <NoExpencesMessage title='No expences.' />}
+          {expences && expences.length > 0 ? <ExpencesList data={expences} /> : <NoExpencesMessage title='No expences.' rootStyles={styles.messageContainer} />}
         </LinearGradient>
       </View>
   )
@@ -38,7 +38,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  gradient: {
-    flex: 1
-  }
+  messageContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "90%",
+    marginLeft: "auto",
+    marginRight: "auto",
+  },
 })

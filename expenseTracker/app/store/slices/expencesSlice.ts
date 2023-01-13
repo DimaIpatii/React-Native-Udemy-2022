@@ -1,9 +1,11 @@
 import { createSlice, CreateSliceOptions, createAsyncThunk } from "@reduxjs/toolkit";
 
 // Services
-import {getAllExpences, addExpence} from '../../services/APIMethods';
+import {getAllExpences, addExpence, updateExpence, deleteExpence } from '../../services/APIMethods';
 export const getAllExpencesThunk = createAsyncThunk("expences/getAll", getAllExpences);
 export const addExpenceThunk = createAsyncThunk("expences/add", addExpence);
+export const updateExpenceThunk = createAsyncThunk("expences/update", updateExpence);
+export const deleteExpenceThunk = createAsyncThunk("expences/delete", deleteExpence);
 
 // Types
 import { IExpenseItem } from "../../types/global";
@@ -30,21 +32,6 @@ const expencesSlice = createSlice({
         expences: [],
     },
     reducers: {
-        updateExpence(state, action){
-            state.expences = state.expences.map(expence => {
-                if(expence.id === action.payload.id){
-                    return action.payload;
-                }else{
-                    return expence;
-                }
-            })
-        },
-        deleteExpence(state, action){
-            state.expences = state.expences.filter(expence => expence.id !== action.payload.id);
-        },
-        addExpence(state, action){
-            state.expences.unshift(action.payload);
-        },
     },
     extraReducers: (builder) => {
         builder.addCase(getAllExpencesThunk.fulfilled, (state, action) => {
@@ -52,6 +39,21 @@ const expencesSlice = createSlice({
         }),
         builder.addCase(addExpenceThunk.fulfilled, (state, action) => {
             state.expences.unshift(action.payload as any);
+        }),
+        builder.addCase(updateExpenceThunk.fulfilled, (state, action) => {
+
+            state.expences = state.expences.map(expence => {
+                if(expence.id === action.payload.id){
+                    return action.payload;
+                }else {
+                    return expence;
+                }
+            })
+        }),
+        builder.addCase(deleteExpenceThunk.fulfilled, (state, action) => {
+            const remainedExpences = state.expences.filter(expence => expence.id !== action.payload);
+            console.log("Remained",remainedExpences)
+            state.expences = remainedExpences;
         })
     }
 } as CreateSliceOptions<IExpenceSlice> ); 
