@@ -13,7 +13,7 @@ import { navigationRef } from './app/utils/RootNavigator';
 // Styles
 
 // Components
-import { SafeAreaView, StyleSheet, View  } from 'react-native';
+import { SafeAreaView, StyleSheet, View, Platform  } from 'react-native';
 import AllExpenses from './app/screens/AllExpences/AllExpenses';
 import RecentExpenses from './app/screens/RecentExpences/RecentExpenses';
 import { NavigationContainer } from '@react-navigation/native';
@@ -62,6 +62,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingTop: Platform.OS === "android" ? 30 : 0,
   },
   gradient: {
     width: "100%",
