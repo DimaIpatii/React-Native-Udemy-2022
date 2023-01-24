@@ -20,7 +20,7 @@ import NoExpencesMessage from '../../components/NoExpencesMessage/NoExpencesMess
 
 
 const AllExpenses = (): JSX.Element => {
-  const expences = useRootState(state => state.expences);
+  const expences = useRootState(state => state.expanceReducer.expences);
 
   return (
       <View style={styles.container}>

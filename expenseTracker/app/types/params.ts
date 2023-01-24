@@ -1,0 +1,1 @@
+export interface IAuthenticateParams {email: string, password: string};

@@ -1,8 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import expanceReducer from './slices/expencesSlice';
+import authenticateReducer from './slices/authenticateSlice';
 
 const appStore = configureStore({
-    reducer: expanceReducer
+    reducer: {
+        expanceReducer,
+        authenticateReducer
+    }
 });
 
 export default appStore;

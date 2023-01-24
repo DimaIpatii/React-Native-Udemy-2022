@@ -22,7 +22,7 @@ interface ISummaryProps {
 };
 
 const Summary = (props: ISummaryProps): JSX.Element => {
-    const expences = useRootState(state => state.expences);
+    const expences = useRootState(state => state.expanceReducer.expences);
     const [total, setTotal] = useState<number>(0);
 
     useLayoutEffect(() => {

@@ -1,7 +1,11 @@
 import axios from "axios"
-import { IExpenseItem } from "../types/global";
+
+// Types
+import { IExpenseItem, Authenticate } from "../types/global";
+import { IAuthenticateParams } from '../types/params';
 
 const BASE_URL = "https://expencetracker-6092e-default-rtdb.europe-west1.firebasedatabase.app/";
+const API_KEY = "AIzaSyC0iwmh6RRrxQ9tJHkKtOlPQ9ao0B0fEPo";
 const EXPENCES_ENDPOINT = "expences.json";
 
 export const getAllExpences = async () => {
@@ -53,6 +57,21 @@ export const deleteExpence = async (expenceToDeleteId: string): Promise<string> 
         return expenceToDeleteId;
     }catch(error){
         console.error(`Error in deleting an expence with id: ${expenceToDeleteId}.`, error);
+        return Promise.reject(error);
+    }
+}
+
+
+export const authenticate= async <T = Authenticate.signUp | Authenticate.signInWithPassword, P = IAuthenticateParams> (method: T, params: P ): Promise<any> => {
+    try{
+        const response = await axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:${method}?key=${API_KEY}`, {
+            ...params,
+            returnSecureToken: true
+        });
+
+        return response.data;
+    }catch(error){
+        console.error(`Error in authentication with method: ${method}. `, error);
         return Promise.reject(error);
     }
 }

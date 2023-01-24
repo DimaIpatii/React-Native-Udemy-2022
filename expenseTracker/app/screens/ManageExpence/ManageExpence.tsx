@@ -1,165 +1,217 @@
-import {useState, useLayoutEffect} from 'react'
+import { useState, useLayoutEffect } from "react";
 
 // Outer
-import { useRoute, RouteProp, useNavigation, NavigationProp } from '@react-navigation/native';
-import moment from 'moment';
+import {
+  useRoute,
+  RouteProp,
+  useNavigation,
+  NavigationProp,
+} from "@react-navigation/native";
+import moment from "moment";
 
 // Store
-import { useDispatchApp, useRootState } from '../../store/hooks';
-import { addExpenceThunk, updateExpenceThunk, deleteExpenceThunk } from '../../store/slices/expencesSlice';
+import { useDispatchApp, useRootState } from "../../store/hooks";
+import {
+  addExpenceThunk,
+  updateExpenceThunk,
+  deleteExpenceThunk,
+} from "../../store/slices/expencesSlice";
 
 // Global
-import { colors } from '../../utils/variables';
+import { colors } from "../../utils/variables";
 
 // Styles
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
 
 // Components
-import {View, Text, Pressable, TextInput, Alert} from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import IconButton from '../../components/IconButton/IconButton';
-import { MaterialIcons, Feather, Ionicons } from '@expo/vector-icons'; 
-import { AntDesign, FontAwesome } from '@expo/vector-icons'; 
-import { IExpenseItem } from '../../types/global';
-
+import { View, Text, Pressable, TextInput, Alert } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import IconButton from "../../components/utils/IconButton/IconButton";
+import { MaterialIcons, Feather, Ionicons } from "@expo/vector-icons";
+import { AntDesign, FontAwesome } from "@expo/vector-icons";
+import { IExpenseItem } from "../../types/global";
+import Input from "../../components/utils/Input/Input";
 
 // Types
 
 const ManageExpence = (): JSX.Element => {
-  const {params}: RouteProp<any> = useRoute();
+  const { params }: RouteProp<any> = useRoute();
   const navigation: NavigationProp<any> = useNavigation();
-  const expences = useRootState(state => state.expences);
+  const expences = useRootState((state) => state.expanceReducer.expences);
   const dispatch = useDispatchApp();
 
-  const isEditing = !!params?.expenceId
-  const [formValues, setFormValues] = useState<{title: string, date: string, price: string}>({
+  const isEditing = !!params?.expenceId;
+  const [formValues, setFormValues] = useState<{
+    title: string;
+    date: string;
+    price: string;
+  }>({
     title: "",
     price: "",
-    date: moment().format("DD/MM/yyyy")
+    date: moment().format("DD/MM/yyyy"),
   });
 
   /* ********************************** */
-  
-  const confirmHandler = async (): Promise<void> => {
 
+  const confirmHandler = async (): Promise<void> => {
     const expence: Partial<IExpenseItem> = {
       title: formValues.title,
       date: formValues.date,
       price: Number(formValues.price),
-    }
-
-    if(params?.expenceId){
-        const currentExpence = expences ? expences.find(expence => expence.id === params?.expenceId) : null;
-
-        if(currentExpence){
-          await dispatch(updateExpenceThunk({
-            ...currentExpence,
-            ...expence
-          }));
-        }else{
-            Alert.alert("Something wrong!", "Failed to update expence")
-        }
-        
-    }else{
-      await dispatch(addExpenceThunk(expence));
     };
+
+    if (params?.expenceId) {
+      const currentExpence = expences
+        ? expences.find((expence) => expence.id === params?.expenceId)
+        : null;
+
+      if (currentExpence) {
+        await dispatch(
+          updateExpenceThunk({
+            ...currentExpence,
+            ...expence,
+          })
+        );
+      } else {
+        Alert.alert("Something wrong!", "Failed to update expence");
+      }
+    } else {
+      await dispatch(addExpenceThunk(expence));
+    }
 
     navigation.goBack();
   };
 
   const cancelHandler = (): void => {
     navigation.goBack();
-  }
+  };
 
   const deleteHandler = async (): Promise<void> => {
-    await dispatch(deleteExpenceThunk(params?.expenceId))
+    await dispatch(deleteExpenceThunk(params?.expenceId));
     navigation.goBack();
-  }
+  };
 
   /* ********************************** */
 
   useLayoutEffect(() => {
-    
-    if(params?.expenceId){
-      const currentExpence = expences ? expences.find(expence => expence.id === params?.expenceId) : null;
+    if (params?.expenceId) {
+      const currentExpence = expences
+        ? expences.find((expence) => expence.id === params?.expenceId)
+        : null;
 
-      if(currentExpence){
+      if (currentExpence) {
         setFormValues({
           title: currentExpence.title,
           price: String(currentExpence.price),
-          date: currentExpence.date
-        })
+          date: currentExpence.date,
+        });
       }
     }
-  },[expences]);
+  }, [expences]);
   /* ********************************** */
 
-
   return (
-    <LinearGradient colors={[colors.primary300,colors.primary500]} style={styles.gradient} locations={[0.2,0.7]}>
-      
-          <View style={styles.itemContainer}>
-            <Text style={styles.title}>{isEditing ? "Update expence" : "Add expence"}</Text>
+    <LinearGradient
+      colors={[colors.primary300, colors.primary500]}
+      style={styles.gradient}
+      locations={[0.2, 0.7]}
+    >
+      <View style={styles.itemContainer}>
+        <Text style={styles.title}>
+          {isEditing ? "Update expence" : "Add expence"}
+        </Text>
 
-            <TextInput 
-              placeholder='Title'
-              value={formValues.title}
-              onChangeText={(newTitle) => setFormValues({...formValues, title: newTitle})} 
-              style={styles.titleInput} 
-            />
+        <Input
+          rootOverride={{ marginBottom: 20 }}
+          textInputProps={{
+            placeholder: "Title",
+            value: formValues.title,
+            onChangeText: (newTitle) =>
+              setFormValues({ ...formValues, title: newTitle }),
+          }}
+        />
 
-            <View style={styles.infoContainer}>
-              <View style={styles.infoWrapper}>
-                <AntDesign name="calendar" size={15} color={colors.primary500} style={styles.infoIcon} />
-                <TextInput 
-                  placeholder='01/01/2023' 
-                  value={formValues.date}
-                  onChangeText={(newDate) => setFormValues({...formValues, date: newDate})} 
-                  style={styles.dateInput} 
-                />
-              </View>
-              <View style={styles.infoWrapper}>
-                <FontAwesome name="dollar" size={15} color={colors.primary500} style={styles.infoIcon} />
-                <TextInput 
-                  value={formValues.price} 
-                  placeholder='Price'
-                  style={styles.priceInput} 
-                  onChangeText={(newPrice) => setFormValues({...formValues, price: newPrice})} 
-                  keyboardType="decimal-pad"
-                  textContentType="telephoneNumber"
-                />
-              </View>
-            </View>
-          </View>
+        <View style={styles.infoContainer}>
+          <Input
+            rootOverride={{
+              flex: 1,
+              height: "auto",
+            }}
+            styleOverride={styles.dateInput}
+            Icon={
+              <AntDesign
+                name="calendar"
+                size={15}
+                color={colors.primary500}
+                style={styles.infoIcon}
+              />
+            }
+            textInputProps={{
+              placeholder: "01/01/2023",
+              value: formValues.date,
+              onChangeText: (newDate) =>
+                setFormValues({ ...formValues, date: newDate }),
+            }}
+          />
 
-          <View style={styles.buttonsWrapper}>
-            {isEditing && <IconButton 
-              Icon={<MaterialIcons name="delete" size={20} color="red" />} 
-              label="Delete" 
-              overrideLabelStyles={[styles.label, {color: "red"}]} 
-              overrideButtonStyles={styles.button}
-              onPress={deleteHandler}
-            />}
-            <Pressable
-              style={styles.button} 
-              onPress={cancelHandler}
-              >
-                <Text style={styles.label}>Cancel</Text>
-              </Pressable>
+          <Input
+            rootOverride={{
+              flex: 1,
+              height: "auto",
+            }}
+            styleOverride={styles.priceInput}
+            Icon={
+              <FontAwesome
+                name="dollar"
+                size={15}
+                color={colors.primary500}
+                style={styles.infoIcon}
+              />
+            }
+            textInputProps={{
+              value: formValues.price,
+              placeholder: "Price",
+              onChangeText: (newPrice) =>
+                setFormValues({ ...formValues, price: newPrice }),
+              keyboardType: "decimal-pad",
+              textContentType: "telephoneNumber",
+            }}
+          />
+        </View>
+      </View>
 
-            <IconButton
-              disable={formValues.title.trim().length === 0}
-              Icon={isEditing ? <Feather name="refresh-cw" size={20} color="white" /> : <Ionicons name="ios-add" size={20} color="white" />} 
-              label={isEditing ? "Update" : "Add"}  
-              overrideLabelStyles={[styles.label]}
-              overrideButtonStyles={styles.button}
-              onPress={confirmHandler}
-            />
+      <View style={styles.buttonsWrapper}>
+        {isEditing && (
+          <IconButton
+            Icon={<MaterialIcons name="delete" size={20} color="red" />}
+            label="Delete"
+            overrideLabelStyles={[styles.label, { color: "red" }]}
+            overrideButtonStyles={styles.button}
+            onPress={deleteHandler}
+          />
+        )}
+        <Pressable style={styles.button} onPress={cancelHandler}>
+          <Text style={styles.label}>Cancel</Text>
+        </Pressable>
 
-          </View>
+        <IconButton
+          disable={formValues.title.trim().length === 0}
+          Icon={
+            isEditing ? (
+              <Feather name="refresh-cw" size={20} color="white" />
+            ) : (
+              <Ionicons name="ios-add" size={20} color="white" />
+            )
+          }
+          label={isEditing ? "Update" : "Add"}
+          overrideLabelStyles={[styles.label]}
+          overrideButtonStyles={styles.button}
+          onPress={confirmHandler}
+        />
+      </View>
     </LinearGradient>
-  )
-}
+  );
+};
 
 export default ManageExpence;
 
@@ -170,12 +222,12 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     width: "100%",
-    marginBottom: 30
+    marginBottom: 30,
   },
   title: {
     fontSize: 40,
     color: "white",
-    marginBottom: 20
+    marginBottom: 20,
   },
   titleInput: {
     fontSize: 30,
@@ -184,45 +236,37 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     paddingHorizontal: 20,
     paddingVertical: 5,
-    borderRadius: 10
+    borderRadius: 10,
   },
   infoContainer: {
     flexDirection: "row",
-  },
-  infoWrapper: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    position: "relative"
   },
   infoIcon: {
     position: "absolute",
     top: "50%",
     left: 20,
-    transform: [{translateY: -7.5}],
-    zIndex: 1
+    transform: [{ translateY: -7.5 }],
+    zIndex: 1,
   },
   dateInput: {
     width: "95%",
     fontSize: 16,
     color: colors.primary500,
-    backgroundColor: "#fff",
     paddingLeft: 35,
     paddingRight: 20,
-    paddingVertical: 5,
-    borderRadius: 10,
-    textAlign: "center"
+    paddingVertical: 8,
+    marginRight: "auto",
+    textAlign: "center",
   },
   priceInput: {
     width: "95%",
     fontSize: 16,
-    backgroundColor: "#fff",
     paddingLeft: 35,
     paddingRight: 20,
-    paddingVertical: 5,
-    borderRadius: 10,
+    paddingVertical: 8,
+    marginLeft: "auto",
     color: colors.primary500,
-    textAlign: "center"
+    textAlign: "center",
   },
   buttonsWrapper: {
     flexDirection: "row",
@@ -232,7 +276,7 @@ const styles = StyleSheet.create({
   label: {
     marginLeft: 4,
     color: "white",
-    lineHeight: 20
+    lineHeight: 20,
   },
   button: {
     marginHorizontal: 10,
@@ -240,5 +284,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 10,
-  }
-})
+  },
+});

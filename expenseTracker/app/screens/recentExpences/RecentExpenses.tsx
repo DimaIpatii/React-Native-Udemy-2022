@@ -25,7 +25,7 @@ import {IExpenseItem} from '../../types/global';
 
 
 const RecentExpenses = (): JSX.Element => {
-  const expences = useRootState(state => state.expences);
+  const expences = useRootState(state => state.expanceReducer.expences);
   const [data, setData] = useState<IExpenseItem[]>([]);
   const [loading, setLoading] = useState(true);
 
