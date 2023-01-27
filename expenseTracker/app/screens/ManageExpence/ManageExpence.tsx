@@ -185,7 +185,7 @@ const ManageExpence = (): JSX.Element => {
           <IconButton
             Icon={<MaterialIcons name="delete" size={20} color="red" />}
             label="Delete"
-            overrideLabelStyles={[styles.label, { color: "red" }]}
+            overrideLabelStyles={[styles.label, { color: colors.alert }]}
             overrideButtonStyles={styles.button}
             onPress={deleteHandler}
           />

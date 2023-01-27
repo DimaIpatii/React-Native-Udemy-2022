@@ -7,6 +7,7 @@ const en_en: ILocale = {
   Google: "Google",
   Facebook: "Facebook",
   OrSignInWith: "Or sign in with",
+  Cancel: "Cancel",
 };
 
 export default en_en;

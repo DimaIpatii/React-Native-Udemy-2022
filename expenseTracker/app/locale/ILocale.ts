@@ -5,4 +5,5 @@ export interface ILocale {
   Google: string;
   Facebook: string;
   OrSignInWith: string;
+  Cancel: string;
 }

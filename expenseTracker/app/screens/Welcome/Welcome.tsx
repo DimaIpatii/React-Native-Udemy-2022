@@ -3,22 +3,22 @@ import React from "react";
 // Outer
 
 // Global
-import globalStrings from "../../../locale/globalStrings.module";
+import globalStrings from "../../locale/globalStrings.module";
 
 // Styles
 
 // Components
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
-import Logo from "../../Logo/Logo";
-import WelcomeImage from "../../utils/Images/WelcomeImage";
-import Button from "../../utils/Button/Button";
+import Logo from "../../components/Logo/Logo";
+import WelcomeImage from "../../components/utils/Images/WelcomeImage";
+import Button from "../../components/utils/Button/Button";
 import { FontAwesome } from "@expo/vector-icons";
-import Input from "../../utils/Input/Input";
+import Input from "../../components/utils/Input/Input";
 
 // Types
-import { Direction } from "../../../types/global";
-import { colors } from "../../../utils/variables";
+import { Direction } from "../../types/global";
+import { colors } from "../../utils/variables";
 
 const Welcome: React.FunctionComponent = (): JSX.Element => {
   const navigator: NavigationProp<any> = useNavigation();
@@ -48,7 +48,7 @@ const Welcome: React.FunctionComponent = (): JSX.Element => {
       </View>
 
       <Input
-        label="User Name/Email"
+        label="Email"
         textInputProps={{
           placeholder: "your@email.com",
           autoCapitalize: "none",
@@ -67,7 +67,7 @@ const Welcome: React.FunctionComponent = (): JSX.Element => {
         styleOverride={styles.inputStyle}
       />
 
-      <View style={styles.signUpButtonWrapper}>
+      <View style={styles.signInButtonWrapper}>
         <Button
           onPressCallBack={() => navigator.navigate(Direction.SignIn)}
           label={globalStrings.en_en.SignIn}
@@ -151,10 +151,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     color: colors.primary600,
   },
-  inputLabelStyles: {
-    fontSize: 16,
-  },
-  signUpButtonWrapper: {
+  signInButtonWrapper: {
     marginTop: 5,
   },
   welcomeImageContainer: {

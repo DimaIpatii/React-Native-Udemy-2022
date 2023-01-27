@@ -11,4 +11,5 @@ export const colors = {
   white: "#fff",
   google: "#D43034",
   facabook: "#4064AC",
+  alert: "#D80000",
 };
